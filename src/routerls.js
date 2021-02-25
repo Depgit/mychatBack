@@ -88,9 +88,9 @@ routerLS.patch('/forgetpass', async(req, res) =>{
 })
 
 routerLS.get('/profile', async(req, res) => {
-    const {username, myone} = req.body;
+    const {username, isEditable} = req.body;
     const result = await UserData.findOne({username: username}).select({friendChats: false, password: false});
-    res.send({isEditable: myone, data: result});
+    res.send({isEditable: isEditable, data: result});
 })
 
 module.exports = routerLS;
