@@ -1,7 +1,9 @@
 const express = require("express");
 const routerLS = new express.Router();
 const UserData = require('../models/auth');
-const isOkEmail = require('./Emailvarification')
+const isOkEmail = require('./Emailvarification');
+const bcrypt = require('bcryptjs');
+const tokenobj = require('./middleware/jwt')
 
 routerLS.post('/signup', async(req, res) =>{
     const {fullname, username, email, password } = req.body;
@@ -21,12 +23,13 @@ routerLS.post('/signup', async(req, res) =>{
 
 routerLS.patch('/signup', async(req, res) =>{
     const {fullname, image, username, email, password } = req.body;
+    const hashedpassword = await bcrypt.hash(password, 12);
     const newData = new UserData({
         fullname: fullname,
         image: image,
         username: username,
         email: email,
-        password: password,
+        password: hashedpassword,
         friendChats: []
     });
     const result = await newData.save();
@@ -38,9 +41,10 @@ routerLS.post('/login', async(req, res) =>{
     const result = await UserData.findOne({username: username});
     if(result == null) {
         res.send({isVarified: false, massage: 'username not exist please check username'});
-    } else if (result.password != password) {
+    } else if (await bcrypt.compare(password, result.password)) {
         res.send({isVarified: false, massage: 'password is not correct please forget password'});
     } else {
+        const token = await tokenobj.CreateToken(result._id);
         res.send({isVarified: true, massage: 'found', data: result});
     }
 });
@@ -70,27 +74,26 @@ routerLS.patch('/forgetpass', async(req, res) =>{
     if (password != cpassword) {
         res.send({isVarified: false, massage: `both passward didn't match`});
     }
+    const hashedpassword = await bcrypt.hash(password, 12);
     if (isemail) {
         result = await UserData.updateOne({email: emailorusername}, {
             $set: {
-                password: password
+                password: hashedpassword
             }
         }, { useFindAndModify: false });
     }
     else {
         result = await UserData.updateOne({username: emailorusername}, {
             $set: {
-                password: password
+                password: hashedpassword
             }
         }, { useFindAndModify: false });
     }
     res.send({isVarified: true, massage: `you can login with new password`})
 })
 
-routerLS.get('/profile', async(req, res) => {
-    const {username, isEditable} = req.body;
-    const result = await UserData.findOne({username: username}).select({friendChats: false, password: false});
-    res.send({isEditable: isEditable, data: result});
+routerLS.get('/', async(req, res) => {
+
 })
 
 module.exports = routerLS;

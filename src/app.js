@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const UserData = require('../models/auth')
 const Post = require('../models/Post')
 const routerLS = require('./routerls')
+const routerFriend = require('./rourterfriend');
 const port = process.env.PORT || 8000;
 const dbu = `mongodb+srv://rayvivek881:qDZxzeDbbeIRXWOg@nodetuts.6d6nn.mongodb.net/Database?retryWrites=true&w=majority`;
 
@@ -15,6 +16,8 @@ mongoose.connect(dbu, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(routerLS);
+app.use(routerFriend);
+
 
 app.listen(port, () => { 
     console.log(`we are working port ${port}`);

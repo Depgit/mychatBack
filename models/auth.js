@@ -23,6 +23,9 @@ const loginSchema = mongoose.Schema({
     friendChats: {
         type: Array,
         required: true
+    },
+    friendrequest: {
+        type: Array
     }
 }, {timestamps: true});
 const UserData = mongoose.model('UserData', loginSchema);
