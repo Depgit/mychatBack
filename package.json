@@ -1,22 +1,22 @@
 {
   "name": "node_back",
   "version": "1.0.0",
-  "description": "back end of my site",
-  "main": "src/app.js",
+  "description": "",
+  "main": "index.js",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "lodash": "^4.17.21",
-    "mongoose": "^5.11.15",
     "morgan": "^1.10.0",
+    "mongoose": "^5.11.15",
     "nodemailer": "^6.4.18",
     "npm": "^7.5.6"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "nodemon src/app"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "vivek kumar ray",
+  "author": "",
   "license": "ISC"
 }
