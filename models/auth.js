@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const loginSchema = mongoose.Schema({
-    Fullname: {
+    fullname: {
         type: String,
         required: true
     },
@@ -20,7 +20,7 @@ const loginSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    FriendChats: {
+    friendChats: {
         type: Array,
         required: true
     }

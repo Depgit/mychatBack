@@ -1,6 +1,2 @@
-let lst = {
-    name: "vivek",
-    age: 22
-}
-delete lst['age'];
-console.log(lst);
+let myname = "rayvivek@123";
+console.log(myname.indexOf('_'));
