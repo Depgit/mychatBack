@@ -9,6 +9,9 @@ const Authentication = (req, res, next) => {
         if (!cookieobj.isVarified) {
             res.send({isVarified: false})
         } else {
+            req.user = {
+                myid: cookieobj._id
+            }
             next();
         }
     }

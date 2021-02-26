@@ -20,17 +20,21 @@ const loginSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        default: ''
+    },
     friendChats: {
-        type: Array,
-        required: true
+        type: Map,
+        default: {}
     },
     friendrequest: {
         type: Array,
-        required: true
+        default: []
     },
     newmessage: {
         type: Array,
-        required: true
+        default: []
     }
 }, {timestamps: true});
 const UserData = mongoose.model('UserData', loginSchema);
