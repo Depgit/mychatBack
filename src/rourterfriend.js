@@ -28,6 +28,9 @@ routerFriend.put('/friendacc', Authentication, async (req, res) => {
         mydata = data[1];
         frienddata = data[0];
     }
+    if (mydata.friendChats[friendid] != undefined) {
+        res.send({});
+    }
     const mynewdata = {
         unseen: 0,
         name: frienddata.fullname,
@@ -73,7 +76,7 @@ routerFriend.patch('/massage', Authentication, async (req, res) => {
         $set: {
             friendChats: mydata.friendChats
         }
-    });
+    }, { useFindAndModify: false });
     frienddata.friendChats[myid][chats].push([1, message, Date.now()]);
     frienddata.friendChats[myid][unseen] += 1;
     frienddata.newmessage.push(myid);
@@ -82,7 +85,7 @@ routerFriend.patch('/massage', Authentication, async (req, res) => {
             friendChats: frienddata.friendChats,
             newmessage: frienddata.newmessage
         }
-    }); 
+    }, { useFindAndModify: false }); 
     res.send({isSend: true, friendname: frienddata.friendChats.name});
 })
 
@@ -114,5 +117,27 @@ routerFriend.get('/newchats', Authentication, async(req, res) => {
     }
     res.send({dataArray: data});
 });
+
+routerFriend.put('/setStatus', Authentication, async (req, res) => {
+    const { myid } = req.user;
+    const result = await UserData.updateOne({_id: myid}, {
+        $set: {
+            status: req.body.status
+        }
+    }, { useFindAndModify: false });
+    res.send({updated: true})
+});
+
+routerFriend.post('/changeprofile', Authentication, async (req, res) => {
+    const { myid } = req.user;
+    const {fullname, image} = req.body;
+    const result = await UserData.updateOne({_id: myid}, {
+        $set: {
+            fullname: fullname,
+            image: image
+        }
+    }, { useFindAndModify: false })
+    res.send({updated: true});
+})
 
 module.exports = routerFriend;

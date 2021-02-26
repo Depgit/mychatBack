@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.use(routerLS);
 app.use(routerFriend);
-app.use(routersearch)
+app.use(routersearch);
 
 app.listen(port, () => { 
     console.log(`we are working port ${port}`);
