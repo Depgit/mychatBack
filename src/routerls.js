@@ -45,7 +45,12 @@ routerLS.post('/login', async(req, res) =>{
         res.send({isVarified: false, massage: 'password is not correct please forget password'});
     } else {
         const token = await tokenobj.CreateToken(result._id);
-        res.send({isVarified: true, massage: 'found', data: result});
+        let options = {
+            maxAge: 1000 * 60 * 120,
+            httpOnly: true,
+        }
+        res.cookie('user_id', token , options)
+        res.send({isVarified: true, massage: 'found'});
     }
 });
 
@@ -92,8 +97,24 @@ routerLS.patch('/forgetpass', async(req, res) =>{
     res.send({isVarified: true, massage: `you can login with new password`})
 })
 
-routerLS.get('/', async(req, res) => {
-
-})
+routerLS.post('/home', async(req, res) => {
+    const { user_id } = req.cookies;
+    if (user_id == undefined) {
+        res.send({isVarified: false});
+    } else {
+        const cookieobj = await tokenobj.VarifyToken(user_id);
+        if (!cookieobj.isVarified) {
+            res.send({isVarified: false})
+        } else {
+            const result = await UserData.findById(cookieobj._id).select({password: false, friendChats: false});
+            const obj = {
+                ...result,
+                newmessage: result.newmessage.length,
+                friendrequest: result.friendrequest.length
+            }
+            res.send({isVarified: cookieobj.isVarified, data: obj});
+        }
+    }
+});
 
 module.exports = routerLS;

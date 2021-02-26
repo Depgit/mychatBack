@@ -25,7 +25,12 @@ const loginSchema = mongoose.Schema({
         required: true
     },
     friendrequest: {
-        type: Array
+        type: Array,
+        required: true
+    },
+    newmessage: {
+        type: Array,
+        required: true
     }
 }, {timestamps: true});
 const UserData = mongoose.model('UserData', loginSchema);
