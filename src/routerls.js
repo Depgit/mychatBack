@@ -3,7 +3,8 @@ const routerLS = new express.Router();
 const UserData = require('../models/auth');
 const isOkEmail = require('./Emailvarification');
 const bcrypt = require('bcryptjs');
-const tokenobj = require('./middleware/jwt')
+const tokenobj = require('./middleware/jwt');
+const Authentication = require('./middleware/authentication')
 
 routerLS.post('/signup', async(req, res) =>{
     const {fullname, username, email, password } = req.body;
@@ -97,24 +98,16 @@ routerLS.patch('/forgetpass', async(req, res) =>{
     res.send({isVarified: true, massage: `you can login with new password`})
 })
 
-routerLS.post('/home', async(req, res) => {
+routerLS.post('/home', Authentication, async(req, res) => {
     const { user_id } = req.cookies;
-    if (user_id == undefined) {
-        res.send({isVarified: false});
-    } else {
-        const cookieobj = await tokenobj.VarifyToken(user_id);
-        if (!cookieobj.isVarified) {
-            res.send({isVarified: false})
-        } else {
-            const result = await UserData.findById(cookieobj._id).select({password: false, friendChats: false});
-            const obj = {
-                ...result,
-                newmessage: result.newmessage.length,
-                friendrequest: result.friendrequest.length
-            }
-            res.send({isVarified: cookieobj.isVarified, data: obj});
-        }
+    const cookieobj = await tokenobj.VarifyToken(user_id);
+    const result = await UserData.findById(cookieobj._id).select({password: false, friendChats: false});
+    const obj = {
+        ...result,
+        newmessage: result.newmessage.length,
+        friendrequest: result.friendrequest.length
     }
+    res.send({isVarified: cookieobj.isVarified, data: obj});
 });
 
 module.exports = routerLS;

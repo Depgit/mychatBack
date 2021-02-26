@@ -8,8 +8,8 @@ routerFriend.get('/profile', async(req, res) => {
     res.send({isEditable: isEditable, data: result});
 })
 
-routerFriend.get('/friendreq', async(req, res) => {
-    const [myid, friendid] = req.query;
+routerFriend.put('/friendreq', async(req, res) => {
+    const {myid, friendid} = req.query;
     const result = await UserData.updateOne({_id: friendid}, {
         $push: {friendrequest: myid}
     }, { useFindAndModify: false })
