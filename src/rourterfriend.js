@@ -49,6 +49,16 @@ routerFriend.put('/friendacc', Authentication, async (req, res) => {
             }
         }
     }, { useFindAndModify: false });
+    const result2 = await UserData.updateOne({_id: myid}, {
+        $push : {
+            friends: friendid
+        }
+    }, { useFindAndModify: false });
+    const result2 = await UserData.updateOne({_id: friendid}, {
+        $push : {
+            friends: myid
+        }
+    }, { useFindAndModify: false });
     const result1 = await UserData.updateOne({_id: friendid}, {
         $set : {
             friendChats: {
@@ -138,6 +148,42 @@ routerFriend.post('/changeprofile', Authentication, async (req, res) => {
         }
     }, { useFindAndModify: false })
     res.send({updated: true});
+})
+
+routerFriend.patch('/unfriend', Authentication, async (req, res) => {
+    const { myid } = req.user, { friendid } = req.query;
+    const result1 = await UserData.updateOne({_id: myid}, {
+        $push: {
+            friends: friendid
+        }
+    }, { useFindAndModify: false });
+    const result2 = await UserData.updateOne({_id: friendid}, {
+        $push: {
+            friends: myid
+        }
+    }, { useFindAndModify: false });
+    const data = await UserData.find({$or: [{_id: myid}, {_id: friendid}]}).select({friendChats: true});
+    let mydata, frienddata;
+    if (data[0]._id == myid) {
+        mydata = data[0].friendChats;
+        frienddata = data[1].friendChats;
+    } else {
+        mydata = data[1].friendChats;
+        frienddata = data[0].friendChats;
+    }
+    delete mydata[friendid];
+    delete frienddata[myid];
+    const result3 = await UserData.updateOne({_id: myid}, {
+        $set : {
+            friendChats: mydata
+        }
+    }, { useFindAndModify: false });
+    const result4 = await UserData.updateOne({_id: friendid}, {
+        $set : {
+            friendChats: frienddata
+        }
+    }, { useFindAndModify: false });
+    res.send({});
 })
 
 module.exports = routerFriend;

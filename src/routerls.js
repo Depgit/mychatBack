@@ -106,8 +106,7 @@ routerLS.post('/home', Authentication, async(req, res) => {
         newmessage: result.newmessage.length,
         friendrequest: result.friendrequest.length
     }
-    const result1 = await Post.find();
-    res.send({isVarified: cookieobj.isVarified, data: obj, posts: result1});
+    res.send({isVarified: cookieobj.isVarified, data: obj});
 });
 
 module.exports = routerLS;
