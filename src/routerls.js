@@ -8,7 +8,7 @@ const Authentication = require('./middleware/authentication');
 const Post = require("../models/Post");
 
 routerLS.post('/signup', async(req, res) =>{
-    const {fullname, username, email, password } = req.body;
+    const {fullname, username, email, password ,cpassword} = req.body;
     if (password != cpassword) {
         res.send({isVarified: false, massage: `both passward didn't match`});
     }
