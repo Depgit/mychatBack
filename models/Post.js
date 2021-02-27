@@ -8,6 +8,10 @@ const PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    userid: {
+        type: String,
+        required: true
+    },
     likes: {
         type: Array,
         default: []
