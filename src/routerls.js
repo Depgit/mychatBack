@@ -42,7 +42,7 @@ routerLS.post('/login', async(req, res) =>{
     const result = await UserData.findOne({username: username});
     if(result == null) {
         res.send({isVarified: false, massage: 'username not exist please check username'});
-    } else if (await bcrypt.compare(password, result.password)) {
+    } else if (!await bcrypt.compare(password, result.password)) {
         res.send({isVarified: false, massage: 'password is not correct please forget password'});
     } else {
         const token = await tokenobj.CreateToken(result._id);
@@ -107,7 +107,7 @@ routerLS.post('/home', Authentication, async(req, res) => {
         friendrequest: result.friendrequest.length
     }
     const result1 = await Post.find();
-    res.send({isVarified: cookieobj.isVarified, data: obj, posts: result});
+    res.send({isVarified: cookieobj.isVarified, data: obj, posts: result1});
 });
 
 module.exports = routerLS;
