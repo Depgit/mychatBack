@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const tokenobj = require('./middleware/jwt');
 const Authentication = require('./middleware/authentication');
 const Post = require("../models/Post");
+const Cryption = require('./middleware/encryption');
 
 routerLS.post('/signup', async(req, res) =>{
     const {fullname, username, email, password ,cpassword} = req.body;
@@ -30,7 +31,7 @@ routerLS.patch('/signup', async(req, res) =>{
         fullname: fullname,
         image: image,
         username: username,
-        email: email,
+        email: Cryption.Encryption(email),
         password: hashedpassword,
     });
     const result = await newData.save();
@@ -59,7 +60,7 @@ routerLS.get('/forgetpass', async (req, res) =>{
     const { emailorusername } = req.body;
     let result, flag;
     if (emailorusername.indexOf('@') != -1) {
-        result = await UserData.findOne({email: emailorusername}).select({email: true, fullname: true});
+        result = await UserData.findOne({email: Cryption.Encryption(emailorusername)}).select({email: true, fullname: true});
         flag = true
     } else {
         result = await UserData.findOne({username: emailorusername}).select({email: true, fullname: true});
@@ -69,7 +70,7 @@ routerLS.get('/forgetpass', async (req, res) =>{
         res.send({isVarified: false, massage:'user with this email or username not exist please check again'});
     } else {
         const {email, fullname} = result;
-        let val = await isOkEmail(email, fullname);
+        let val = await isOkEmail(Cryption.Decryption(email), fullname);
         res.send({isVarified: true, massage:'proceed further', val: val, isemail: flag});
     }
 });
@@ -82,7 +83,7 @@ routerLS.patch('/forgetpass', async(req, res) =>{
     }
     const hashedpassword = await bcrypt.hash(password, 12);
     if (isemail) {
-        result = await UserData.updateOne({email: emailorusername}, {
+        result = await UserData.updateOne({email: Cryption.Encryption(emailorusername)}, {
             $set: {
                 password: hashedpassword
             }
