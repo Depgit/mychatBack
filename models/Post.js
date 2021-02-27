@@ -10,14 +10,20 @@ const PostSchema = mongoose.Schema({
     },
     likes: {
         type: Array,
-        required: true
+        default: []
     },
     Title: {
         type: String,
         required: true,
     },
-    data: String,
-    Comments: Array
+    data: {
+        type: String,
+        required: true,
+    },
+    Comments: {
+        type: Array,
+        default: []
+    }
 }, {timestamps: true});
-const Post = mongoose.model('Auth', PostSchema);
+const Post = mongoose.model('Post', PostSchema);
 module.exports = Post;

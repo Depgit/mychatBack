@@ -35,6 +35,10 @@ const loginSchema = mongoose.Schema({
     newmessage: {
         type: Array,
         default: []
+    },
+    posts: {
+        type: Array,
+        default: []
     }
 }, {timestamps: true});
 const UserData = mongoose.model('UserData', loginSchema);

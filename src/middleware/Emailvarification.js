@@ -1,10 +1,11 @@
+const {user, pass} = require('../keys.js');
 var nodemailer = require('nodemailer');
 const isOkEmail = async (targetEmail, name) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'rayvivek080@gmail.com',
-            pass: 'Vive@123'
+            user,
+            pass
         }
     });
     const randomInt = () => {
@@ -13,7 +14,7 @@ const isOkEmail = async (targetEmail, name) => {
     }
     let val = randomInt();
     var mailOptions = {
-        from: 'rayvivek080@gmail.com',
+        from: user,
         to: targetEmail,
         subject: 'facebook email varification by Node js',
         text: `Hi ${name}, i am owner of this beautiful website name:  vivek kumar ray

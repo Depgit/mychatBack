@@ -1,10 +1,11 @@
 const express = require("express");
 const routerLS = new express.Router();
 const UserData = require('../models/auth');
-const isOkEmail = require('./Emailvarification');
+const isOkEmail = require('./middleware/Emailvarification');
 const bcrypt = require('bcryptjs');
 const tokenobj = require('./middleware/jwt');
-const Authentication = require('./middleware/authentication')
+const Authentication = require('./middleware/authentication');
+const Post = require("../models/Post");
 
 routerLS.post('/signup', async(req, res) =>{
     const {fullname, username, email, password } = req.body;
@@ -31,7 +32,6 @@ routerLS.patch('/signup', async(req, res) =>{
         username: username,
         email: email,
         password: hashedpassword,
-        friendChats: []
     });
     const result = await newData.save();
     res.send({massage: 'account created'});
@@ -99,15 +99,15 @@ routerLS.patch('/forgetpass', async(req, res) =>{
 })
 
 routerLS.post('/home', Authentication, async(req, res) => {
-    const { user_id } = req.cookies;
-    const cookieobj = await tokenobj.VarifyToken(user_id);
-    const result = await UserData.findById(cookieobj._id).select({password: false, friendChats: false});
+    const { myid } = req.user;
+    const result = await UserData.findById(myid).select({password: false, friendChats: false});
     const obj = {
         ...result,
         newmessage: result.newmessage.length,
         friendrequest: result.friendrequest.length
     }
-    res.send({isVarified: cookieobj.isVarified, data: obj});
+    const result1 = await Post.find();
+    res.send({isVarified: cookieobj.isVarified, data: obj, posts: result});
 });
 
 module.exports = routerLS;

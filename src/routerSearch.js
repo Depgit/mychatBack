@@ -1,7 +1,7 @@
 const express = require("express");
 const routersearch = new express.Router();
-const UserData = require('../models/auth');
 const Authentication = require('./middleware/authentication')
+const UserData = require('../models/auth');
 const IsOkName = require('./middleware/editDistance')
 
 routersearch.post('/search', async (req, res) => {
